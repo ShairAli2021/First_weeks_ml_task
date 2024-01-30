@@ -1,6 +1,3 @@
-
-
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -15,23 +12,27 @@
             font-family: Arial, sans-serif;
         }
 
-        h1 {
-            color: #009688;
-        }
-
         .container {
             display: flex;
-            justify-content: space-around;
-            align-items: flex-start;
-            flex-wrap: wrap; /* Allow content to wrap to the next line if needed */
+            flex-wrap: wrap;
+            justify-content: space-around; /* Adjust as needed */
         }
 
-        .form-container, .result-container, .image-container {
+        .form-container {
             background-color: #f5f5f5;
             padding: 20px;
             border-radius: 10px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            width: 45%;
+            width: 45%; /* Adjust as needed */
+            margin: 10px;
+        }
+
+        .result-plot-container {
+            background-color: #f5f5f5;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            width: 45%; /* Adjust as needed */
             margin: 10px;
         }
 
@@ -78,49 +79,26 @@
         <div class="form-container">
             <h1>Diabetes Prediction</h1>
             <form action="/predict" method="post">
-                <label for="pregnancies" class="input-label">weight:</label>
-                <input type="number" name="pregnancies" class="input" required>
-
-                <label for="glucose" class="input-label">Glucose:</label>
-                <input type="number" name="glucose" class="input" required>
-
-                <label for="blood_pressure" class="input-label">Blood Pressure:</label>
-                <input type="number" name="blood_pressure" class="input" required>
-
-                <label for="skin_thickness" class="input-label">Skin Thickness:</label>
-                <input type="number" name="skin_thickness" class="input" required>
-
-                <label for="bmi" class="input-label">BMI:</label>
-                <input type="number" name="bmi" class="input" required>
-
-                <label for="DiabetesPedigreeFunction" class="input-label">DPF:</label>
-                <input type="number" name="DiabetesPedigreeFunction" class="input" required>
-
-                <label for="insulin" class="input-label">Insulin:</label>
-                <input type="number" name="insulin" class="input" required>
-
-                <label for="age" class="input-label">Age:</label>
-                <input type="number" name="age" class="input" required>
+                {% for feature, values in suggested_values.items() %}
+                    <label for="{{ feature }}" class="input-label">{{ feature }} ({{ values['min'] }} - {{ values['max'] }}):</label>
+                    <input type="number" name="{{ feature }}" class="input" required>
+                {% endfor %}
                 <!-- Your form inputs here -->
                 <button type="submit" class="button">Predict</button>
             </form>
         </div>
-        <div class="result-container">
+        <div class="result-plot-container">
             {% if result %}
                 <div class="result1">
                     <p><strong>Result:</strong> {{ result }}</p>
+                    <p><strong>Advice:</strong> {{ advice }}</p>
                 </div>
             {% endif %}
-        </div>
-
-        <!-- New Image Display Section -->
-        <div class="image-container">
-            <h2>Image Display Section</h2>
-            <img src="../Capture.PNG" alt="Image 1" class="image">
-            
-            <!-- Add more images as needed -->
+            {% if plot_url %}
+                <h2>User Input Values Plot</h2>
+                <img src="data:image/png;base64,{{ plot_url }}" alt="User Input Plot" class="image">
+            {% endif %}
         </div>
     </div>
 </body>
 </html>
-
